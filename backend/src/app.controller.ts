@@ -1,10 +1,18 @@
-// src/app.controller.ts
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, UseGuards } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { AuthGuard } from './guard/auth.guard';
 
+@UseGuards(AuthGuard)
 @Controller()
 export class AppController {
   constructor(private configService: ConfigService) {}
+
+  @Get()
+  someProtectedRoute() {
+    return {
+      message: 'This is a protected route',
+    };
+  }
 
   @Get('env')
   getEnvVariables() {
