@@ -21,7 +21,7 @@ export class Student {
   age: number;
 
   @Column()
-  grade: string;
+  grade: number;
 
   @CreateDateColumn()
   created_at: Date;

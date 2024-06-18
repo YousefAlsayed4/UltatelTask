@@ -33,9 +33,16 @@ export class AuthService {
   async create(signUpDto: SignUpDto): Promise<User> {
     const { username, email, password } = signUpDto;
 
-    const emailInUse = await this.userRepository.findOne({ where: { email } });
-    if (emailInUse) {
-      throw new BadRequestException('Email is already in use');
+    const existingUser = await this.userRepository.findOne({
+      where: [{ email }, { username }],
+    });
+
+    if (existingUser) {
+      throw new BadRequestException(
+        existingUser.email === email
+          ? 'Email is already in use'
+          : 'Username is already in use',
+      );
     }
 
     const passwordHash = await bcrypt.hash(password, 10);
@@ -48,7 +55,7 @@ export class AuthService {
     return this.userRepository.save(newUser);
   }
 
-  async Login(credential: LoginDto) {
+  async login(credential: LoginDto) {
     const { email, password } = credential;
 
     const user = await this.userRepository.findOne({ where: { email } });
@@ -80,8 +87,10 @@ export class AuthService {
     });
     await this.refreshTokenRepository.save(refreshTokenEntity);
 
+    const accessToken = this.jwtService.sign(payload, { secret });
+
     return {
-      access_token: this.jwtService.sign(payload, { secret }),
+      access_token: accessToken,
       refreshToken,
     };
   }

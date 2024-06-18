@@ -5,12 +5,16 @@ import {
   ExecutionContext,
   UnauthorizedException,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config'; // Import ConfigService
 import { Observable } from 'rxjs';
-import { Request } from 'express'; // Import the Request type from 'express'
+import { Request } from 'express';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  constructor(private jwtService: JwtService) {} // Corrected the JwtService injection case
+  constructor(
+    private jwtService: JwtService,
+    private configService: ConfigService, // Inject ConfigService
+  ) {}
 
   canActivate(
     context: ExecutionContext,
@@ -21,7 +25,8 @@ export class AuthGuard implements CanActivate {
       throw new UnauthorizedException('InvalidToken');
     }
     try {
-      this.jwtService.verify(token);
+      const secret = this.configService.get<string>('JWT_SECRET'); // Use ConfigService to get the secret
+      this.jwtService.verify(token, { secret });
       return true;
     } catch (error) {
       throw new UnauthorizedException('InvalidToken');
