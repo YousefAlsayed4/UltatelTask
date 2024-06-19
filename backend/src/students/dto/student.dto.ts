@@ -1,19 +1,36 @@
-import { IsString, IsNotEmpty, IsNumber } from 'class-validator';
+import {
+  IsString,
+  IsInt,
+  IsEmail,
+  IsNotEmpty,
+  IsOptional,
+  IsDate,
+} from 'class-validator';
+import { Type } from 'class-transformer';
 
 export class CreateStudentDto {
   @IsString()
   @IsNotEmpty()
-  firstName: string;
+  name: string;
+
+  @IsInt()
+  @IsOptional()
+  age?: number;
+
+  @IsEmail()
+  @IsNotEmpty()
+  email: string;
 
   @IsString()
   @IsNotEmpty()
-  lastName: string;
+  gender: string;
 
-  @IsNumber()
+  @IsString()
   @IsNotEmpty()
-  age: number;
+  country: string;
 
-  @IsNumber()
+  @Type(() => Date)
+  @IsDate()
   @IsNotEmpty()
-  grade: number;
+  dateOfBirth: Date;
 }

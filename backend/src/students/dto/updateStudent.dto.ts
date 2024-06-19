@@ -1,16 +1,4 @@
-import { IsString, IsNotEmpty, IsNumber } from 'class-validator';
-export class UpdateStudentDto {
-  // Assuming typical student fields, adjust as necessary
-  @IsString()
-  @IsNotEmpty()
-  firstName?: string;
-  @IsString()
-  @IsNotEmpty()
-  lastName?: string;
-  @IsNotEmpty()
-  @IsNumber()
-  age?: number;
-  @IsNotEmpty()
-  @IsNumber()
-  grade?: number;
-}
+import { PartialType } from '@nestjs/mapped-types';
+import { CreateStudentDto } from './student.dto';
+
+export class UpdateStudentDto extends PartialType(CreateStudentDto) {}
