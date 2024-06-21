@@ -1,0 +1,78 @@
+<div class="container">
+  <div class="header">
+    <img src="assets/logo.png" alt="Logo" class="logo">
+  </div>
+
+  <h2>Students</h2>
+
+  <div class="search-form">
+    <div class="form-row">
+      <div class="form-group">
+        <label for="searchName">Name</label>
+        <input type="text" id="searchName" class="form-control" placeholder="Name" [(ngModel)]="searchName">
+      </div>
+      <div class="form-group">
+        <label for="searchAgeFrom">Age</label>
+        <input type="number" id="searchAgeFrom" class="form-control" placeholder="From" [(ngModel)]="searchAgeFrom">
+      </div>
+      <div class="form-group">
+        <label for="searchAgeTo">&nbsp;</label>
+        <input type="number" id="searchAgeTo" class="form-control" placeholder="To" [(ngModel)]="searchAgeTo">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label for="searchCountry">Country</label>
+        <select id="searchCountry" class="form-control" [(ngModel)]="searchCountry">
+          <option value="">Country</option>
+          <option *ngFor="let country of countries">{{ country }}</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="searchGender">Gender</label>
+        <select id="searchGender" class="form-control" [(ngModel)]="searchGender">
+          <option value="">Gender</option>
+          <option *ngFor="let gender of genders">{{ gender }}</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <button class="btn btn-primary" (click)="handleSearch()">Search</button>
+      <button class="btn btn-secondary" (click)="resetSearch()">Reset</button>
+    </div>
+  </div>
+
+  <div class="btn-add-new">
+    <button class="btn btn-success" (click)="openAddEditModal(true)">+ Add New</button>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th (click)="sortTable('name')">Student Name</th>
+          <th (click)="sortTable('age')">Age</th>
+          <th (click)="sortTable('gender')">Gender</th>
+          <th (click)="sortTable('email')">Email</th>
+          <th (click)="sortTable('country')">Country</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let student of filteredStudents | paginate: { id: 'server', itemsPerPage: itemsPerPage, currentPage: currentPage, totalItems: totalItems }">
+          <td>{{ student.name }}</td>
+          <td>{{ student.age }}</td>
+          <td>{{ student.gender }}</td>
+          <td>{{ student.email }}</td>
+          <td>{{ student.country }}</td>
+          <td>
+            <button class="btn btn-primary btn-sm" (click)="openAddEditModal(false, student)">Edit</button>
+            <button class="btn btn-danger btn-sm" (click)="deleteStudent(student.id)">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  
+  <!-- <pagination-controls id="server" (pageChange)="getPage($event)" [totalItems]="totalItems" [itemsPerPage]="itemsPerPage" [directionLinks]="true" [autoHide]="true"></pagination-controls>  -->
+</div>
