@@ -9,7 +9,6 @@ import {
 export class SignUpDto {
   @IsString()
   @IsNotEmpty()
-  @IsString()
   username: string;
 
   @IsEmail()

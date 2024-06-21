@@ -67,6 +67,9 @@ export class AuthService {
     if (!isMatch) {
       throw new UnauthorizedException('Password is incorrect');
     }
+    // const token = this.jwtService.sign({ id: user.id, email: user.email });
+    // user.token = token;
+    // await this.userRepository.save(user);
 
     return this.generateJwtToken(user);
   }
@@ -75,7 +78,6 @@ export class AuthService {
     const payload = { username: user.username, sub: user.id };
     const secret = this.configService.get<string>('JWT_SECRET');
     const refreshToken = uuidv4();
-
     if (!secret) {
       throw new Error('JWT secret is not defined');
     }
@@ -100,7 +102,6 @@ export class AuthService {
       where: { token: refreshToken },
       relations: ['user'],
     });
-
     if (!storedToken) {
       throw new UnauthorizedException('Invalid refresh token');
     }

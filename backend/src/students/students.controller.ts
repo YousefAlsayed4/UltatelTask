@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '../guard/auth.guard';
@@ -13,7 +14,7 @@ import { StudentsService } from './students.service';
 import { CreateStudentDto } from './dto/student.dto';
 import { UpdateStudentDto } from './dto/updateStudent.dto';
 
-@UseGuards(AuthGuard)
+// @UseGuards(AuthGuard)
 @Controller('students')
 export class StudentsController {
   constructor(private studentsService: StudentsService) {}
@@ -44,5 +45,18 @@ export class StudentsController {
   @Delete(':id')
   deleteStudent(@Param('id') id: number) {
     return this.studentsService.deleteStudent(id);
+  }
+
+  @Post('search')
+  filterStudents(
+    @Query('page') currentPage: number,
+    @Query('pageSize') pageSize: number,
+    @Body() searchParams: any,
+  ) {
+    return this.studentsService.filterStudents(
+      currentPage,
+      pageSize,
+      searchParams,
+    );
   }
 }
