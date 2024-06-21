@@ -1,237 +1,285 @@
-import { Component, OnInit } from '@angular/core';
-import { StudentService } from '../../service/student.service';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-// import { StudentAddComponent } from '../student-add/student-add.component';
-// import { StudentEditComponent } from '../student-edit/student-edit.component';
-import Swal from 'sweetalert2';
-import { FormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
-import { NgxPaginationModule } from 'ngx-pagination';
-import { Student } from '../../dto/student.dto';
-import { StudentFilter } from '../../dto/studentFilter.dto';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { Router } from '@angular/router';
-import { NgSelectModule } from '@ng-select/ng-select';
-import { EditStudentComponent } from '../student-edit/student-edit.component'
-import { StudentPaginated } from '../../dto/studentPaginated.dto'
+// import { CommonModule } from '@angular/common';
+// import { HttpClient, HttpClientModule } from '@angular/common/http';
+// import { Component } from '@angular/core';
+// import { FormsModule } from '@angular/forms';
+// import { Router } from '@angular/router';
+// import { NgSelectModule } from '@ng-select/ng-select';
+// import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+// import { StudentModalComponent } from '../student-edit/student-edit.component';
+// import { StudentService } from '../../service/student.service';
+// import Swal from 'sweetalert2';
+// import { AgePipe } from '../../Pipes/age.pipe';
+// import { catchError, finalize, last, of } from 'rxjs';
+// // import { AuthService } from '../../../services/auth.service';
 
+// @Component({
+//   selector: 'app-home',
+//   standalone: true,
+//   imports: [NgSelectModule, CommonModule, FormsModule, AgePipe,HttpClientModule],
+//   providers: [StudentService],
+//   templateUrl: './student-list.component.html',
+//   styleUrl: './student-list.component.css',
+// })
+// export class StudentComponent {
+//   selectedCountry: any;
+//   selectedGender: any;
+//   selectedEntry: any;
+//   countries: any[] = [];
+//   students: any[] = [];
+//   filteredStudents: any[] = [];
+//   currentPage: number = 1;
+//   totalPages: number = 0;
+//   pageSize: number = 10;
+//   sortColumn: string = '';
+//   sortDirection: 'asc' | 'desc' = 'asc';
+//   limit: number = this.pageSize;
+//   offset: number = 0;
+//   defaultFilter = { limit: this.limit, offset: 0 };
+//   selectedName: string = '';
+//   selectedMinAge: number | null = null;
+//   selectedMaxAge: number | null = null;
+//   filter: any = this.defaultFilter;
+//   totalEntries: number = 0;
 
+//   genders = [
+//     { id: 1, name: 'male' },
+//     { id: 2, name: 'female' },
+//   ];
+//   entries = [
+//     { id: 1, name: '10' },
+//     { id: 2, name: '25' },
+//     { id: 3, name: '50' },
+//     { id: 4, name: '75' },
+//     { id: 5, name: '100' },
+//   ];
 
+//   constructor(
+//     private http: HttpClient,
+//     private router: Router,
+//     private studentService: StudentService,
+//     private modalService: NgbModal,
+//     // private authService: AuthService
+//   ) {}
 
-@Component({
-  selector: 'app-student-list',
-  standalone: true,
-  imports: [NgSelectModule, CommonModule, FormsModule, HttpClientModule, NgxPaginationModule],
-  templateUrl: './student-list.component.html',
-  styleUrls: ['./student-list.component.css']
-})
-export class StudentListComponent implements OnInit {
-  students: StudentFilter[] = [];
-  filteredStudents: StudentFilter[] = [];
-  searchName: string = '';
-  searchAgeFrom: number | null = null;
-  searchAgeTo: number | null = null;
-  searchCountry: string = '';
-  searchGender: string = '';
-  loading: boolean = false;
-  genders: string[] = ['Male', 'Female'];
-  searchParams: any = {};
-  currentPage: number = 1;
-  itemsPerPage: number = 5;
-  totalItems: number = 0;
-  totalPages: number = 0;
-  pageSize: number = 10;
-  sortColumn: string = '';
-  sortDirection: 'asc' | 'desc' = 'asc'
-  countries = [
-    "United States",
-    "Canada",
-    "Germany",
-    "France",
-    "United Kingdom",
-    "Japan",
-    "Australia",
-    "Brazil",
-    "Italy",
-    "Spain",
-    "India",
-    "China",
-    "Mexico",
-    "Russia",
-    "South Korea"
-  ];
+//   ngOnInit() {
+//     this.fetchCountries();
+//     this.fetchStudents(this.defaultFilter); // default filters
+//   }
 
-  constructor(private http: HttpClient,
-    private router: Router,
-    private studentService: StudentService,
-    private modalService: NgbModal) { }
+//   fetchCountries() {
+//     this.http.get<any[]>('assets/countries.json').subscribe({
+//       next: (data) => {
+//         this.countries = data;
+//       },
+//       error: (error) => {
+//         console.error('Error loading countries:', error);
+//       },
+//     });
+//   }
 
-  ngOnInit(): void {
-    this.updateFilteredStudents();
-    this.fetchStudents();
-  }
-  sortTable(column: string, search: boolean = false) {
-    if (this.sortColumn == column && search == false) {
-      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
-    } else {
-      this.sortColumn = column;
-      if (search == false) {
-        this.sortDirection = 'asc';
-      }
-    }
-  }
+//   displayedPages(): number[] {
+//     let startPage = Math.floor((this.currentPage - 1) / 10) * 10 + 1;
+//     let endPage = startPage + 9;
 
-  fetchStudents() {
-    this.studentService.getAllStudents().subscribe({
-      next: (data) => {
-        this.students = data;
-        this.filteredStudents = data;
-        this.totalPages = Math.ceil(
-          this.filteredStudents.length / this.pageSize
-        );
-      },
-      error: (error) => {
-        console.error('Error fetching students:', error);
-      },
-    });
-  }
+//     if (endPage > this.totalPages) {
+//       endPage = this.totalPages;
+//     }
 
-  addStudent(student: Student): void {
-    this.studentService.createStudent(student).subscribe(() => {
-      this.updateFilteredStudents();
-    });
-  }
+//     return this.pagesArray().slice(startPage - 1, endPage);
+//   }
+//   shouldShowEllipsisAfter(): boolean {
+//     const lastPageInCurrentRange =
+//       Math.floor((this.currentPage - 1) / 10) * 10 + 10;
+//     return lastPageInCurrentRange < this.totalPages;
+//   }
+//   shouldShowEllipsisBefore(): boolean {
+//     const firstPageInCurrentRange =
+//       Math.floor((this.currentPage - 1) / 10) * 10 + 1;
+//     return firstPageInCurrentRange > 1;
+//   }
+//   pagesArray(): number[] {
+//     return Array.from({ length: this.totalPages }, (_, i) => i + 1);
+//   }
 
+//   fetchStudents(filters: any) {
+//     this.studentService.getAllStudents(filters).subscribe({
+//       next: (data: any) => {
+//         this.students = data.result;
+//         this.filteredStudents = data.result;
+//         this.totalPages = Math.ceil(data.total / this.pageSize);
+//         this.totalEntries = data.total;
+//       },
+//       error: (error) => {
+//         this.pageSize = 10;
+//         this.filter = this.defaultFilter;
+//         console.error('Error fetching students:', error);
+//       },
+//     });
+//   }
 
-  calculateAge(dob: Date): number {
-    const birthDate = new Date(dob);
-    const today = new Date();
-    let age = today.getFullYear() - birthDate.getFullYear();
-    const monthDifference = today.getMonth() - birthDate.getMonth();
-    if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
-      age--;
-    }
-    return age;
-  }
+//   // logout() {
+//   //   Swal.fire({
+//   //     title: 'Are you sure?',
+//   //     text: `You are about to Logout`,
+//   //     icon: 'warning',
+//   //     showCancelButton: true,
+//   //     confirmButtonText: 'Yes, Logout!',
+//   //     cancelButtonText: 'Cancel',
+//   //   }).then((result: any) => {
+//   //     if (result.isConfirmed) {
+//   //       this.authService.logout();
+//   //     }
+//   //   });
+//   // }
 
-  deleteStudent(id: number): void {
-    console.log('Deleting student with ID:', id);
-    Swal.fire({
-      title: 'Are you sure?',
-      text: "You won't be able to revert this!",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, delete it!'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.studentService.deleteStudent(id).subscribe(() => {
-          Swal.fire({
-            title: 'Deleted!',
-            text: 'Student Record has been deleted.',
-            icon: 'success'
-          });
-          this.updateFilteredStudents();
-        });
-      }
-    });
-  }
-  
-  // updateStudentInList(updatedStudent: any) {
-  //   console.log('Updating student with ID:', updatedStudent.id);
-  //   let index = this.students.findIndex((s) => s.id === updatedStudent.id);
-  //   if (index !== -1) {
-  //     this.students[index] = updatedStudent;
-  //   }
-  //   index = this.filteredStudents.findIndex((s) => s.id === updatedStudent.id);
-  //   if (index !== -1) {
-  //     this.filteredStudents[index] = updatedStudent;
-  //   }
-  // }
-  
+//   // this is automatically called when onEntriesClear is called
+//   onEntriesChange() {
+//     if (this.pageSize < 10) this.pageSize = 10;
+//     this.filter = {
+//       ...this.filter,
+//       limit: this.pageSize,
+//       offset: this.pageSize * (this.currentPage - 1),
+//     };
 
-  openAddEditModal(isAddMode: boolean, student?: any) {
-    const modalRef = this.modalService.open(EditStudentComponent, {
-      size: 'lg',
-    });
+//     this.goToFirstPage();
+//   }
 
-    modalRef.componentInstance.modalTitle = isAddMode
-      ? 'Add Student'
-      : 'Edit Student';
-    modalRef.componentInstance.student = student ? { ...student } : {};
+//   onEntriesClear() {
+//     this.selectedEntry = 10;
+//     this.pageSize = 10;
+//     this.filter = {
+//       ...this.filter,
+//       limit: this.pageSize,
+//       offset: this.pageSize * (this.currentPage - 1),
+//     };
+//   }
 
-    modalRef.componentInstance.studentUpdated.subscribe(
-      (updatedStudent: any) => {
-        this.updateStudentInList(updatedStudent);
-      }
-    );
+//   sortTable(column: string) {
+//     if (this.sortColumn === column) {
+//       this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+//     } else {
+//       this.sortColumn = column;
+//       this.sortDirection = 'asc';
+//     }
+//     this.filter = {
+//       ...this.filter,
+//       orderBy: column,
+//       order: this.sortDirection,
+//     };
+//     this.fetchStudents(this.filter);
+//   }
 
-    modalRef.componentInstance.studentAdded.subscribe((newStudent: any) => {
-      this.addStudentToList(newStudent);
-    });
-  }
-  addStudentToList(newStudent: any) {
-    this.students.push(newStudent);
-    if (this.students.length != this.filteredStudents.length) {
-      this.filteredStudents.push(newStudent);
-    }
-    this.sortTable(this.sortColumn, true);
-  }
+//   goToPage(page: number) {
+//     if (page >= 1 && page <= this.totalPages) {
+//       this.currentPage = page;
+//       this.filter = {
+//         ...this.filter,
+//         offset: this.filter.limit * (page - 1),
+//       };
+//     }
 
+//     this.fetchStudents(this.filter);
+//   }
 
-  updateStudentInList(updatedStudent: any) {
-    let index = this.students.findIndex((s) => s.id === updatedStudent.id);
-    if (index !== -1) {
-      this.students[index] = updatedStudent;
-    }
-    index = this.filteredStudents.findIndex((s) => s.id === updatedStudent.id);
-    if (index !== -1) {
-      this.filteredStudents[index] = updatedStudent;
-    }
-  }
+//   goToFirstPage() {
+//     this.goToPage(1);
+//   }
 
-  // addNewStudent(): void {
-  //   const modalRef = this.modalService.open(StudentAddComponent);
-  //   modalRef.result.then(
-  //     () => this.updateFilteredStudents(),
-  //     () => {}
-  //   );
-  // }
+//   goToLastPage() {
+//     this.goToPage(this.totalPages);
+//   }
 
-  updateFilteredStudents(): void {
-    this.searchParams.name = this.searchName.trim();
-    this.searchParams.age = this.searchAgeFrom;
-    this.searchParams.ageto = this.searchAgeTo;
-    this.searchParams.country = this.searchCountry.trim();
-    this.searchParams.gender = this.searchGender.trim();
-    this.studentService.filterStudent(this.currentPage, this.itemsPerPage, this.searchParams).subscribe((students) => {
-      this.students = students.data.map((student) => ({
-        ...student,
-        age: this.calculateAge(student.dob)
-      }));
-      this.filteredStudents = this.students;
-      this.totalItems = students.total;
-    });
-  }
+//   goToPreviousPage() {
+//     this.goToPage(this.currentPage - 1);
+//   }
 
-  getPage(page: number) {
-    this.currentPage = page;
-    this.updateFilteredStudents();
-  }
+//   goToNextPage() {
+//     this.goToPage(this.currentPage + 1);
+//   }
 
-  handleSearch(): void {
-    this.currentPage = 1;
-    this.updateFilteredStudents();
-  }
+//   searchStudents() {
+//     this.filter = {
+//       limit: this.pageSize,
+//       offset: this.pageSize * (this.currentPage - 1),
+//       country: this.selectedCountry,
+//       gender: this.selectedGender,
+//       name: this.selectedName.trim(),
+//       minAge: this.selectedMinAge,
+//       maxAge: this.selectedMaxAge ? this.selectedMaxAge + 1 : null,
+//     };
 
-  resetSearch(): void {
-    this.searchName = '';
-    this.searchAgeFrom = null;
-    this.searchAgeTo = null;
-    this.searchCountry = '';
-    this.searchGender = '';
-    this.updateFilteredStudents();
-  }
-}
+//     this.goToFirstPage();
+//   }
+
+//   resetFilters() {
+//     this.selectedName = '';
+//     this.selectedCountry = null;
+//     this.selectedMinAge = null;
+//     this.selectedMaxAge = null;
+//     this.selectedGender = null;
+//     this.defaultFilter.limit = this.filter.limit;
+//     this.defaultFilter.offset = this.filter.offset;
+//     this.filter = this.defaultFilter;
+//     this.fetchStudents(this.filter);
+//   }
+
+//   getMaxRange(): number {
+//     return Math.min(this.currentPage * this.pageSize, this.totalEntries);
+//   }
+
+//   confirmDelete(student: any) {
+//     Swal.fire({
+//       title: 'Are you sure?',
+//       text: `You are about to delete ${student.name}.`,
+//       icon: 'warning',
+//       showCancelButton: true,
+//       confirmButtonText: 'Yes, delete it!',
+//       cancelButtonText: 'Cancel',
+//     }).then((result: any) => {
+//       if (result.isConfirmed) {
+//         this.deleteStudent(student.id);
+//       }
+//     });
+//   }
+
+//   deleteStudent(studentId: number): void {
+//     this.studentService
+//       .deleteStudent(studentId)
+//       .pipe(
+//         catchError((error) => {
+//           console.error('Error deleting student:', error);
+//           Swal.fire('Error!', 'Failed to delete the student.', 'error');
+//           return of(null);
+//         }),
+//         finalize(() => {
+//           this.fetchStudents(this.filter);
+//         })
+//       )
+//       .subscribe(() => {
+//         Swal.fire('Deleted!', 'The student has been deleted.', 'success');
+//       });
+//   }
+
+//   openAddEditModal(isAddMode: boolean, student?: any) {
+//     const modalRef = this.modalService.open(StudentModalComponent, {
+//       size: 'lg',
+//     });
+
+//     modalRef.componentInstance.modalTitle = isAddMode
+//       ? 'Add Student'
+//       : 'Edit Student';
+//     modalRef.componentInstance.student = student ? { ...student } : {};
+
+//     modalRef.componentInstance.studentUpdated.subscribe({
+//       next: (respone: any) => {
+//         this.fetchStudents(this.filter);
+//       },
+//     });
+
+//     modalRef.componentInstance.studentAdded.subscribe({
+//       next: (respone: any) => {
+//         this.fetchStudents(this.filter);
+//       },
+//     });
+//   }
+// }

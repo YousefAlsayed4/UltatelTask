@@ -1,137 +1,138 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Component } from '@angular/core';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { AuthService } from '../../service/auth.service';
-import { RouterModule } from '@angular/router';
+import { RouterModule,Router } from '@angular/router';
+import { HttpClientModule } from '@angular/common/http';
+
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, RouterModule],
+  imports: [ReactiveFormsModule, CommonModule, RouterModule,HttpClientModule],
   templateUrl: './register.component.html',
-  styleUrls: ['./register.component.css']
+  styleUrl: './register.component.css',
 })
-export class RegisterComponent implements OnInit {
-  registerForm!: FormGroup;
-  passwordStrength: string = '';
+export class RegisterComponent {
+  registerForm: FormGroup;
+  showPassword: boolean = false;
+  emailToken = '';
+  register = true;
+  emailTaken = false;
+  showConfirmPassword: boolean = false;
+  passwordStrength = {
+    class: '',
+    lengthValid: false,
+    hasNumber: false,
+    hasUpperCase: false,
+    hasLowerCase: false,
+    hasSymbol: false,
+  };
 
-  constructor(
-    private formBuilder: FormBuilder,
-    private authService: AuthService
-  ) {
-    this.registerForm = this.formBuilder.group({
-      username: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [
-        Validators.required,
-        Validators.minLength(8),
-        this.patternValidator(/(?=.*[A-Z])/, { hasUpperCase: true }),
-        this.patternValidator(/(?=.*[a-z])/, { hasLowerCase: true }),
-        this.patternValidator(/(?=.*\d)/, { hasNumber: true }),
-        this.patternValidator(/(?=.*[^\w\d\s:])/, { hasSpecialCharacter: true })
-      ]],
-      confirmPassword: ['', Validators.required]
-    }, {
-      validator: this.matchPasswords('password', 'confirmPassword')
-    });
-
-    this.registerForm.get('password')?.valueChanges.subscribe(value => {
-      this.passwordStrength = this.evaluatePasswordStrength(value);
-    });
+  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {
+    this.registerForm = this.fb.group(
+      {
+        name: ['', Validators.required],
+        email: ['', [Validators.required, Validators.email]],
+        password: ['', Validators.required],
+        confirmPassword: ['', Validators.required],
+      },
+      { validator: this.passwordMatchValidator }
+    );
   }
 
-  ngOnInit(): void {}
-
-  onSubmit(): void {
-    if (this.registerForm.invalid) {
-      return;
-    }
-    const { username, email, password } = this.registerForm.value;
-    this.authService.register(username, email, password).subscribe((data) => {
-      console.log(data);
-    });
+  togglePasswordVisibility() {
+    this.showPassword = !this.showPassword;
   }
 
-  patternValidator(regex: RegExp, error: { [key: string]: boolean }): (control: any) => any {
-    return (control: any): { [key: string]: any } | null => {
-      if (!control.value) {
-        return null;
-      }
-      const valid = regex.test(control.value);
-      return valid ? null : error;
-    };
+  toggleConfirmPasswordVisibility() {
+    this.showConfirmPassword = !this.showConfirmPassword;
   }
 
-  matchPasswords(password: string, confirmPassword: string) {
-    return (formGroup: FormGroup) => {
-      const passControl = formGroup.controls[password];
-      const confirmPassControl = formGroup.controls[confirmPassword];
+  passwordMatchValidator(formGroup: FormGroup) {
+    const password = formGroup.get('password')?.value;
+    const confirmPassword = formGroup.get('confirmPassword')?.value;
 
-      if (passControl.value !== confirmPassControl.value) {
-        confirmPassControl.setErrors({ mustMatch: true });
-      } else {
-        confirmPassControl.setErrors(null);
-      }
-    };
-  }
-
-  evaluatePasswordStrength(password: string): string {
-    if (!password) {
-      return '';
-    }
-
-    const hasUpperCase = /[A-Z]+/.test(password);
-    const hasLowerCase = /[a-z]+/.test(password);
-    const hasNumber = /[0-9]+/.test(password);
-    const hasSpecialCharacter = /[^\w\d\s:]+/.test(password);
-    const length = password.length >= 8;
-
-    const conditions = [hasUpperCase, hasLowerCase, hasNumber, hasSpecialCharacter, length];
-
-    const strength = conditions.filter(cond => cond).length;
-
-    if (strength <= 2) {
-      return 'Very Weak';
-    } else if (strength === 3) {
-      return 'Weak';
-    } else if (strength === 4) {
-      return 'Medium';
-    } else if (strength === 5) {
-      return 'Strong';
+    if (password !== confirmPassword) {
+      formGroup.get('confirmPassword')?.setErrors({ passwordMismatch: true });
     } else {
-      return '';
+      formGroup.get('confirmPassword')?.setErrors(null);
     }
   }
 
-  getPasswordErrorMessage() {
-    const errors = this.registerForm.get('password')?.errors;
-    if (errors) {
-      if (errors['required']) {
-        return 'Password is required';
-      } else if (errors['minlength']) {
-        return 'Password must be at least 8 characters long';
-      } else if (errors['hasUpperCase']) {
-        return 'Password must contain at least one uppercase letter';
-      } else if (errors['hasLowerCase']) {
-        return 'Password must contain at least one lowercase letter';
-      } else if (errors['hasNumber']) {
-        return 'Password must contain at least one number';
-      } else if (errors['hasSpecialCharacter']) {
-        return 'Password must contain at least one special character';
+  markAllAsTouched(formGroup: FormGroup) {
+    Object.values(formGroup.controls).forEach((control) => {
+      control.markAsTouched();
+      if ((control as FormGroup).controls) {
+        this.markAllAsTouched(control as FormGroup);
       }
-    }
-    return '';
+    });
   }
 
-  getConfirmPasswordErrorMessage() {
-    const confirmPasswordControl = this.registerForm.get('confirmPassword');
-    if (confirmPasswordControl?.errors) {
-      if (confirmPasswordControl.errors['required']) {
-        return 'Confirm Password is required';
-      } else if (confirmPasswordControl.errors['mustMatch']) {
-        return 'Passwords do not match';
-      }
+  checkPasswordStrength() {
+    const password = this.registerForm.get('password')?.value;
+    this.passwordStrength.lengthValid = password.length >= 8;
+
+    this.passwordStrength.hasNumber = /[0-9]/.test(password);
+    this.passwordStrength.hasUpperCase = /[A-Z]/.test(password);
+    this.passwordStrength.hasLowerCase = /[a-z]/.test(password);
+    this.passwordStrength.hasSymbol = /[^A-Za-z0-9]/.test(password);
+
+    if (this.passwordStrength.lengthValid && this.countValidations() == 4) {
+      this.passwordStrength.class = 'strong';
+    } else if (
+      this.passwordStrength.lengthValid &&
+      this.countValidations() >= 2
+    ) {
+      this.passwordStrength.class = 'medium';
+    } else if (this.passwordStrength.lengthValid) {
+      this.passwordStrength.class = 'weak';
+    } else {
+      this.passwordStrength.class = 'very-weak';
     }
-    return '';
   }
+
+  countValidations(): number {
+    let count = 0;
+    if (this.passwordStrength.hasNumber) count++;
+    if (this.passwordStrength.hasUpperCase) count++;
+    if (this.passwordStrength.hasLowerCase) count++;
+    if (this.passwordStrength.hasSymbol) count++;
+    return count;
+  }
+
+  onSubmit() {
+    if (this.registerForm.valid) {
+      const user = this.registerForm.value;
+
+      this.authService.register(user).subscribe(
+        (response) => {
+          if (
+            response.message ==
+            'Registration successful'   
+          ) 
+          this.router.navigate(['/login']);
+          {
+            this.register = false;
+          }
+        },
+        (error) => {
+          if (error.error.message == 'Email is already taken') {
+            this.emailTaken = true;
+          } else {
+            this.emailTaken = false;
+          }
+        }
+      );
+    } else {
+      this.markAllAsTouched(this.registerForm);
+    }
+  }
+
+ 
 }

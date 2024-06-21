@@ -1,70 +1,20 @@
-// import { Injectable } from '@angular/core';
-// import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-// import { Observable, throwError } from 'rxjs';
-// import { catchError, tap } from 'rxjs/operators';
-
-// // interface LoginResponse {
-// //   token: string;
-// // }
-
-// @Injectable({
-//   providedIn: 'root'
-// })
-// export class AuthService {
-//   private baseUrl = 'http://localhost:3000/auth';
-
-//   constructor(private http: HttpClient) { }
-
-//   login(email: string, password: string): Observable<LoginResponse> {
-//     const payload = { email, password };
-//     return this.http.post<LoginResponse>(`${this.baseUrl}/login`, payload)
-//       .pipe(
-//         tap(response => {
-//           // if (response && response.token) {
-//           //   localStorage.setItem('token', response.token);
-//           // }
-//         }),
-//         catchError(this.handleError)
-//       );
-//   }
-
-//   register(username: string, email: string, password: string): Observable<any> {
-//     return this.http.post(`${this.baseUrl}/signup`, { username, email, password })
-//       .pipe(
-//         catchError(this.handleError)
-//       );
-//   }
-
-//   private handleError(error: HttpErrorResponse) {
-//     console.error('AuthService handleError:', error);
-//     return throwError(error);
-//   }
-// }
-
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
-  private baseUrl = 'http://localhost:3000/auth'; 
+  private baseUrl =
+    'http://localhost:3000/user';
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
-  login(username: string, password: string): Observable<any> {
-    return this.http.post(`${this.baseUrl}/login`, { username, password })
+  register(user: any): Observable<any> {
+    return this.http.post(`${this.baseUrl}/register`, user);
   }
-
-  register(username: string, email: string, password: string): Observable<any> {
-    return this.http.post(`${this.baseUrl}/signup`, { username, email, password })
-     
+  login(user: any): Observable<any> {
+    return this.http.post(`${this.baseUrl}/login`, user);
   }
-
-  // private handleError(error: HttpErrorResponse) {
-  //   return throwError(error);
-  // }
 }
-

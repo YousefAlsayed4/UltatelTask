@@ -1,80 +1,210 @@
-<section class="bg-light py-3 py-md-2">
-  <div class="container">
-    <div class="row justify-content-center">
-      <div class="mb-4 img">
-        <img src="assets/logo.svg" alt="logo" />
-      </div>
+<div class="container-fluid">
+  <div class="row justify-content-center h-100 flex-column align-items-center">
+    <div class="col-xxl-2 col-xl-3 col-lg-4 col-md-5 col-sm-6 col-8 text-center p-4">
+      <img src="assets/logo.svg" alt="logo" width="100%" />
     </div>
-  </div>
-  <form (ngSubmit)="onSubmit()" [formGroup]="registerForm">
-    <div class="container">
-      <div class="row justify-content-center">
-        <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-5 col-xxl-4">
-          <div class="card border border-light-subtle rounded-3 shadow-sm">
-            <div class="card-body p-3 p-md-4 p-xl-5">
-              <div class="text-center"></div>
-              <h1 class="fs-6 fw-normal text-center text-black-50 mb-5 fw-bold register">Register</h1>
-              <div class="row gy-2 overflow-hidden">
-                <div class="col-12">
-                  <div class="mb-2">
-                    <label for="username" class="form-label text-black-50 fw-bold">Full Name</label>
-                    <input type="text" class="form-control py-2" id="username" formControlName="username" placeholder="Full Name" required />
-                    <div *ngIf="registerForm.get('username')?.invalid && registerForm.get('username')?.touched" class="text-danger">
-                      Username is required
-                    </div>
-                  </div>
-                </div>
-                <div class="col-12">
-                  <div class="mb-2">
-                    <label for="email" class="form-label text-black-50 fw-bold">Email</label>
-                    <input type="email" class="form-control py-2" id="email" formControlName="email" placeholder="name@example.com" required />
-                    <div *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched" class="text-danger">
-                      Enter a valid email
-                    </div>
-                  </div>
-                </div>
-                <div class="col-12">
-                  <div class="mb-2">
-                    <label for="password" class="form-label text-black-50 fw-bold">Password</label>
-                    <input type="password" class="form-control py-2" id="password" formControlName="password" placeholder="Password" required />
-                    <div *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched" class="text-danger">
-                      {{ getPasswordErrorMessage() }}
-                    </div>
-                    <div *ngIf="registerForm.get('password')?.touched && registerForm.get('password')?.value" class="mt-2">
-                      <span class="badge" [ngClass]="{
-                        'bg-danger': passwordStrength === 'Very Weak',
-                        'bg-warning': passwordStrength === 'Weak',
-                        'bg-info': passwordStrength === 'Medium',
-                        'bg-success': passwordStrength === 'Strong'
-                      }">{{ passwordStrength }}</span>
-                      <small class="text-muted d-block mt-1">
-                        Password must be at least 8 characters and contain 1 number, 1 uppercase letter, 1 lowercase letter, and 1 symbol.
-                      </small>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-12">
-                  <div class="mb-2">
-                    <label for="confirmPassword" class="form-label text-black-50 fw-bold">Confirm Password</label>
-                    <input type="password" class="form-control py-2" id="confirmPassword" formControlName="confirmPassword" placeholder="Confirm Password" required />
-                    <div *ngIf="registerForm.get('confirmPassword')?.invalid && registerForm.get('confirmPassword')?.touched" class="text-danger">
-                      {{ getConfirmPasswordErrorMessage() }}
-                    </div>
-                  </div>
-                </div>
-                <div class="col-12">
-                  <div class="d-grid my-3">
-                    <button class="btn btn-primary btn-lg" type="submit">Register</button>
-                  </div>
-                </div>
-                <div class="col-12">
-                  <p class="text-center text-muted small">Already have an account? <a href="/login" class="text-decoration-none">Login here</a>.</p>
-                </div>
+    <div class="col-xxl-4 col-xl-5 col-lg-6 col-md-8 col-sm-8 col-11 row justify-content-center" *ngIf="register">
+      <div class="card py-5 px-3 col-md-10">
+        <div class="text-center">
+          <h4 class="card-title">Register</h4>
+        </div>
+        <div class="card-body">
+          <form (ngSubmit)="onSubmit()" [formGroup]="registerForm">
+            <div class="mb-3 py-2">
+              <label for="name" class="form-label">Full Name</label>
+              <input
+                id="name"
+                type="text"
+                class="form-control"
+                formControlName="name"
+                required
+                placeholder="Full Name"
+              />
+              <div
+                *ngIf="
+                  registerForm.get('name')?.invalid &&
+                  registerForm.get('name')?.touched
+                "
+                class="text-danger"
+              >
+                Full Name is required
               </div>
             </div>
-          </div>
+            <div class="mb-3 py-2">
+              <label for="email" class="form-label">Email</label>
+              <input
+                id="email"
+                type="email"
+                class="form-control"
+                formControlName="email"
+                required
+                placeholder="Email"
+              />
+              <div
+                *ngIf="
+                  registerForm.get('email')?.invalid &&
+                  registerForm.get('email')?.touched
+                "
+                class="text-danger"
+              >
+                Valid email is required
+              </div>
+              <div *ngIf="emailTaken" class="text-danger">
+                Email is already taken,
+                <a routerLink="/login" class="sm-login-btn login-btn">Login instead</a>
+              </div>
+            </div>
+            <div class="mb-3 py-2">
+              <label for="password" class="form-label">Password</label>
+              <div class="password-container">
+                <input
+                  id="password"
+                  [type]="showPassword ? 'text' : 'password'"
+                  class="form-control"
+                  formControlName="password"
+                  required
+                  placeholder="Password"
+                  (input)="checkPasswordStrength()"
+                />
+                <span
+                  class="toggle-password position-absolute"
+                  (click)="togglePasswordVisibility()"
+                >
+                  <i
+                    [ngClass]="showPassword ? 'fa fa-eye' : 'fa fa-eye-slash'"
+                  ></i>
+                </span>
+              </div>
+              <div
+                class="alert"
+                [ngClass]="passwordStrength.class"
+                *ngIf="registerForm.get('password')?.value"
+              >
+                <div class="alert-title">
+                  <p
+                    *ngIf="passwordStrength.class === 'very-weak'"
+                    class="py-1"
+                  >
+                    Very Weak
+                  </p>
+                  <p *ngIf="passwordStrength.class === 'weak'" class="py-1">
+                    Weak
+                  </p>
+                  <p *ngIf="passwordStrength.class === 'medium'" class="py-1">
+                    Medium
+                  </p>
+                  <p *ngIf="passwordStrength.class === 'strong'" class="py-1">
+                    Strong
+                  </p>
+                </div>
+                <div class="alert-message">
+                  Password must be at least
+                  <span
+                    [ngClass]="{
+                      'text-success': passwordStrength.lengthValid
+                    }"
+                    >8 characters</span
+                  >
+                  and contain
+                  <span
+                    [ngClass]="{ 'text-success': passwordStrength.hasNumber }"
+                    >1 number</span
+                  >,
+                  <span
+                    [ngClass]="{
+                      'text-success': passwordStrength.hasUpperCase
+                    }"
+                    >1 uppercase letter</span
+                  >,
+                  <span
+                    [ngClass]="{
+                      'text-success': passwordStrength.hasLowerCase
+                    }"
+                    >1 lowercase letter</span
+                  >, and
+                  <span
+                    [ngClass]="{ 'text-success': passwordStrength.hasSymbol }"
+                    >1 symbol</span
+                  >.
+                </div>
+              </div>
+              <div
+                *ngIf="
+                  registerForm.get('password')?.invalid &&
+                  registerForm.get('password')?.touched
+                "
+                class="text-danger"
+              >
+                Password is required
+              </div>
+            </div>
+            <div class="mb-3 py-2">
+              <label for="confirmPassword" class="form-label"
+                >Confirm Password</label
+              >
+              <div class="password-container">
+                <input
+                  id="confirmPassword"
+                  [type]="showConfirmPassword ? 'text' : 'password'"
+                  class="form-control"
+                  formControlName="confirmPassword"
+                  required
+                  placeholder="Confirm Password"
+                />
+                <span
+                  class="toggle-password position-absolute"
+                  (click)="toggleConfirmPasswordVisibility()"
+                >
+                  <i
+                    [ngClass]="
+                      showConfirmPassword ? 'fa fa-eye' : 'fa fa-eye-slash'
+                    "
+                  ></i>
+                </span>
+              </div>
+              <div
+                *ngIf="
+                  registerForm
+                    .get('confirmPassword')
+                    ?.hasError('passwordMismatch') &&
+                  registerForm.get('confirmPassword')?.touched
+                "
+                class="text-danger"
+              >
+                Passwords do not match.
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary w-100 py-2">
+              Register
+            </button>
+            <div class="w-100 text-center pt-4">
+              <a routerLink="/login" class="login-btn">Login</a>
+            </div>
+          </form>
         </div>
       </div>
     </div>
-  </form>
-</section>
+    <!-- <div class="col-xxl-6 col-xl-5 col-lg-6 col-md-8 col-sm-8 col-11 row justify-content-center" *ngIf="emailConfirmation"> -->
+      <!-- <div
+        class="card py-5 px-3 d-flex flex-column justify-content-center align-items-center"
+      >
+        <div class="image w-25 mx-auto">
+          <img src="assets/email.png" width="100%" alt="" />
+        </div>
+        <h1 class="my-3">Email Confirmation</h1>
+        <p class="w-75 text-center confirm-text">
+          We have sent email to
+          <span *ngIf="registerForm.value.email" class="user-email">{{
+            registerForm.value.email
+          }}</span>
+          to confirm the validity of our email address. After receiving the
+          email follow the link provided to complete your registration.
+        </p>
+        <p class="confirm-text">
+          Confirmed? <a routerLink="/login" class="confirm-login-btn">Login now!</a>
+        </p>
+        <div class="border w-75 my-3 mx-auto"></div>
+      </div> -->
+    </div>
+  </div>
+
