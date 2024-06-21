@@ -1,32 +1,24 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { StudentsModule } from './students/students.module';
-import { UsersModule } from './users/users.module';
-import { User } from './users/entities/user.entity';
-import { Student } from './students/entities/student.entity';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { StudentModule } from './student/student.module';
+import { Student } from './student/entities/student.entity';
+import { ConfigModule } from '@nestjs/config';
+import { UserModule } from './user/user.module';
+import { User } from './user/entities/user.entity';
 import { AuthModule } from './auth/auth.module';
 import { JwtModule } from '@nestjs/jwt';
+import { RefreshToken } from './token/refresh-token.entity';
 
 @Module({
   imports: [
+    JwtModule.register({
+      secret: process.env.JWT_SECRET || 'secret-key',
+      signOptions: { expiresIn: '7d' },
+    }),
     ConfigModule.forRoot({
       isGlobal: true,
-      cache: true,
-    }),
-    JwtModule.registerAsync({
-      imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => {
-        const secret = configService.get<string>('jwt.secret');
-        console.log('Configured JWT Secret in AppModule:', secret);
-        return {
-          secret,
-          signOptions: { expiresIn: '1h' },
-        };
-      },
-      inject: [ConfigService],
     }),
     TypeOrmModule.forRoot({
       type: 'mysql',
@@ -36,12 +28,12 @@ import { JwtModule } from '@nestjs/jwt';
       password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE_NAME,
       autoLoadEntities: true,
-      entities: [User, Student],
+      entities: [Student, User, RefreshToken],
       synchronize: true,
     }),
     AuthModule,
-    StudentsModule,
-    UsersModule,
+    StudentModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],

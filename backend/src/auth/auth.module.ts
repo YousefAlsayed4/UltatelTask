@@ -1,20 +1,19 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { AuthService } from './auth.service';
-import { AuthController } from './auth.controller';
-import { User } from '../users/entities/user.entity';
 import { JwtModule } from '@nestjs/jwt';
-import { ConfigModule } from '@nestjs/config';
-import { RefreshToken } from './entities/refresh-token';
-
+import { AuthService } from './auth.service';
+import { AuthGuard } from './auth.guard';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { RefreshToken } from 'src/token/refresh-token.entity';
+import { RefreshTokenRepository } from 'src/token/refresh-token.repository';
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, RefreshToken]),
-    ConfigModule,
-    JwtModule.register({}),
+    JwtModule.register({
+      secret: process.env.JWT_SECRET || 'your-secret-key',
+      signOptions: { expiresIn: '7d' },
+    }),
+    TypeOrmModule.forFeature([RefreshToken]),
   ],
-  controllers: [AuthController],
-  providers: [AuthService],
-  exports: [JwtModule, AuthService],
+  providers: [AuthService, AuthGuard, RefreshTokenRepository],
+  exports: [AuthService, JwtModule, AuthGuard, RefreshTokenRepository],
 })
 export class AuthModule {}
