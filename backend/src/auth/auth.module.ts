@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthService } from './auth.service';
-import { AuthGuard } from './auth.guard';
+import { AuthGuard } from '../guard/auth.guard';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RefreshToken } from 'src/token/refresh-token.entity';
 import { RefreshTokenRepository } from 'src/token/refresh-token.repository';

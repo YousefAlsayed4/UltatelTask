@@ -16,7 +16,7 @@ import { CreateStudentDto } from './dto/create-student.dto';
 import { UpdateStudentDto } from './dto/update-student.dto';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { Student } from './entities/student.entity';
-import { AuthGuard } from 'src/auth/auth.guard';
+import { AuthGuard } from '../guard/auth.guard';
 
 @ApiTags('Student')
 @Controller('student')

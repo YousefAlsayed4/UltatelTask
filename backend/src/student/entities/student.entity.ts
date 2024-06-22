@@ -5,7 +5,7 @@ import {
   BeforeInsert,
   BeforeUpdate,
 } from 'typeorm';
-
+import { calculateAge } from '../utils/calculateDate';
 @Entity()
 export class Student {
   @PrimaryGeneratedColumn()
@@ -31,17 +31,7 @@ export class Student {
 
   @BeforeInsert()
   @BeforeUpdate()
-  calculateAge() {
-    const today = new Date();
-    const birthDate = new Date(this.dateOfBirth);
-    let age = today.getFullYear() - birthDate.getFullYear();
-    const monthDifference = today.getMonth() - birthDate.getMonth();
-    if (
-      monthDifference < 0 ||
-      (monthDifference === 0 && today.getDate() < birthDate.getDate())
-    ) {
-      age--;
-    }
-    this.age = age;
+  updateAge() {
+    this.age = calculateAge(this.dateOfBirth);
   }
 }

@@ -12,12 +12,6 @@ async function bootstrap() {
       forbidNonWhitelisted: true,
     }),
   );
-  // const corsOptions: CorsOptions = {
-  //   origin: ['http://localhost:4200'], // Allow your frontend URL here
-  //   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-  //   allowedHeaders: 'Content-Type,Authorization',
-  //   credentials: true, // Allow session cookies
-  // };
   app.enableCors({
     origin: '*',
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
@@ -30,22 +24,3 @@ async function bootstrap() {
   await app.listen(3000);
 }
 bootstrap();
-// import { NestFactory } from '@nestjs/core';
-// // import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-// import { AppModule } from './app.module';
-// import * as dotenv from 'dotenv';
-
-// const port = process.env.PORT || 3000;
-
-// async function bootstrap() {
-//   dotenv.config();
-//   const app = await NestFactory.create(AppModule);
-
-//   app.enableCors({
-//     origin: '*',
-//     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
-//     allowedHeaders: ['*'],
-//   });
-//   await app.listen(port);
-// }
-// bootstrap();

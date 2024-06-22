@@ -4,7 +4,7 @@ import {
   ValidationArguments,
 } from 'class-validator';
 
-export function IsDateInRange(
+export function DateValidation(
   min: Date,
   max: Date,
   validationOptions?: ValidationOptions,
