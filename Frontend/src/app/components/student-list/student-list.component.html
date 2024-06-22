@@ -31,9 +31,24 @@
       <div class="col-xl-3 col-lg-4 mb-4">
         <label for="age" class="form-label">Age</label>
         <div class="d-flex align-items-center">
-          <input type="number" class="form-control me-2" [(ngModel)]="minAgeFilter" placeholder="Min" />
+          <input 
+            type="number" 
+            class="form-control me-2" 
+            [(ngModel)]="minAgeFilter" 
+            placeholder="Min" 
+            min="0" 
+            required 
+          />
           <span>to</span>
-          <input type="number" class="form-control ms-2" [(ngModel)]="maxAgeFilter" placeholder="Max" />
+          <input 
+            type="number" 
+            class="form-control ms-2" 
+            [(ngModel)]="maxAgeFilter" 
+            placeholder="Max" 
+            [max]="35" 
+            min="0" 
+            required 
+          />
         </div>
       </div>
 
