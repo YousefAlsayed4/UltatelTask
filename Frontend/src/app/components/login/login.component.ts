@@ -59,7 +59,7 @@ export class LoginComponent {
         (response) => {
           if (response.accessToken) {
             localStorage.setItem('token', response.accessToken);
-            this.router.navigate(['/register']);
+            this.router.navigate(['/home']);
           }
         },
         (error) => {

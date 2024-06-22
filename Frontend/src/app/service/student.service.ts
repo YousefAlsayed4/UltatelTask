@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class StudentService {
   private baseUrl =
-    'https://ultateltask-backend-production.up.railway.app/student';
+    'http://localhost:3000/student';
 
   constructor(private http: HttpClient) {}
 
