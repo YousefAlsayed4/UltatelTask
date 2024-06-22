@@ -65,6 +65,7 @@
             [(ngModel)]="numberOfEntries"
             (change)="onEntriesChange()"
             (clear)="onEntriesClear()"
+            class="custom-ng-select"
           ></ng-select>
         </div>
       </div>
@@ -121,12 +122,10 @@
         </p>
       </div>
       <div class="col-md-9 d-flex justify-content-end">
-        <button class="btn btn-link me-2" [class.disabled]="currentPageNumber === 1" (click)="goToFirstPage()">First</button>
         <button class="btn btn-link me-2" [class.disabled]="currentPageNumber === 1" (click)="goToPreviousPage()">Previous</button>
         <button *ngFor="let page of getPagesArray()" class="btn btn-link me-2" [class.active]="currentPageNumber === page" (click)="goToPage(page)">{{ page }}</button>
         <button class="btn btn-link me-2" [class.disabled]="currentPageNumber === totalNumberOfPages" (click)="goToNextPage()">Next</button>
         <button class="btn btn-link" [class.disabled]="currentPageNumber === totalNumberOfPages" (click)="goToLastPage()">Last</button>
       </div>
-    </div>
   </div>
 </div>

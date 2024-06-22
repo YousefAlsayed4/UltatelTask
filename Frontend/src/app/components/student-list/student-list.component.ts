@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component,ViewEncapsulation } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NgSelectModule } from '@ng-select/ng-select';
@@ -15,6 +15,7 @@ import { StudentEditComponent } from '../student-edit/student-edit.component';
   imports: [NgSelectModule, CommonModule, FormsModule, HttpClientModule],
   templateUrl: './student-list.component.html',
   styleUrls: ['./student-list.component.css'],
+  encapsulation: ViewEncapsulation.None
 })
 export class StudentListComponent {
   countryFilter: any;
@@ -72,7 +73,9 @@ export class StudentListComponent {
   getPagesArray(): number[] {
     return Array.from({ length: this.totalNumberOfPages }, (_, i) => i + 1);
   }
-
+  pagesArray(): number[] {
+    return Array.from({ length: this.totalNumberOfPages }, (_, i) => i + 1);
+  }
   loadStudents() {
     this.studentService.getAllStudents().subscribe({
       next: (data) => {
