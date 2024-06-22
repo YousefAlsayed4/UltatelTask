@@ -31,7 +31,7 @@ export class StudentEditComponent {
   @Input() student: any;
   @Output() studentUpdated = new EventEmitter<any>();
   @Output() studentAdded = new EventEmitter<any>();
-  countries: string[] = ['USA', 'Canada', 'UK', 'Australia', 'Germany'];
+  countries: string[] = ['USA', 'Canada', 'UK', 'Australia', 'Germany','Egypt','Suadi Arabia'];
   isEditMode: boolean = false;
   oldStudent: any;
   studentId: any = '';

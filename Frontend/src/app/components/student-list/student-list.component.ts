@@ -21,7 +21,7 @@ export class StudentListComponent {
   countryFilter: any;
   genderFilter: any;
   entriesPerPage: any;
-  availableCountries: string[] = ['USA', 'Canada', 'UK', 'Australia', 'Germany'];
+  availableCountries: string[] = ['USA', 'Canada', 'UK', 'Australia', 'Germany','Egypt','Suadi Arabia'];
   studentList: any[] = [];
   filteredStudentList: any[] = [];
   currentPageNumber: number = 1;
