@@ -1,6 +1,14 @@
-import { registerDecorator, ValidationOptions, ValidationArguments } from 'class-validator';
+import {
+  registerDecorator,
+  ValidationOptions,
+  ValidationArguments,
+} from 'class-validator';
 
-export function IsDateInRange(min: Date, max: Date, validationOptions?: ValidationOptions) {
+export function IsDateInRange(
+  min: Date,
+  max: Date,
+  validationOptions?: ValidationOptions,
+) {
   return function (object: Object, propertyName: string) {
     registerDecorator({
       name: 'isDateInRange',

@@ -9,17 +9,18 @@ import {
   UsePipes,
   ValidationPipe,
   NotFoundException,
+  UseGuards,
 } from '@nestjs/common';
 import { StudentService } from './student.service';
 import { CreateStudentDto } from './dto/create-student.dto';
 import { UpdateStudentDto } from './dto/update-student.dto';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { Student } from './entities/student.entity';
-// import { AuthGuard } from 'src/auth/auth.guard';
+import { AuthGuard } from 'src/auth/auth.guard';
 
 @ApiTags('Student')
 @Controller('student')
-// @UseGuards(AuthGuard)
+@UseGuards(AuthGuard)
 export class StudentController {
   constructor(private readonly studentService: StudentService) {}
 

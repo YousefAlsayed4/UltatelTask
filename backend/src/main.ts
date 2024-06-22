@@ -2,7 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { CorsOptions } from '@nestjs/common/interfaces/external/cors-options.interface';
+// import { CorsOptions } from '@nestjs/common/interfaces/external/cors-options.interface';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -30,3 +30,22 @@ async function bootstrap() {
   await app.listen(3000);
 }
 bootstrap();
+// import { NestFactory } from '@nestjs/core';
+// // import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+// import { AppModule } from './app.module';
+// import * as dotenv from 'dotenv';
+
+// const port = process.env.PORT || 3000;
+
+// async function bootstrap() {
+//   dotenv.config();
+//   const app = await NestFactory.create(AppModule);
+
+//   app.enableCors({
+//     origin: '*',
+//     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+//     allowedHeaders: ['*'],
+//   });
+//   await app.listen(port);
+// }
+// bootstrap();

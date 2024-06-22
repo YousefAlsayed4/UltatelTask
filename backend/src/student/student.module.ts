@@ -7,8 +7,8 @@ import { StudentRepository } from './student.repository';
 import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Student]),AuthModule],
+  imports: [TypeOrmModule.forFeature([Student]), AuthModule],
   controllers: [StudentController],
-  providers: [StudentService,StudentRepository],
+  providers: [StudentService, StudentRepository],
 })
 export class StudentModule {}

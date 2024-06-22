@@ -13,7 +13,6 @@ export class UpdateStudentDto extends PartialType(CreateStudentDto) {
   @IsOptional()
   name?: string;
 
-
   @ApiPropertyOptional({
     example: 'john.doe@example.com',
     description: 'The email of the student',

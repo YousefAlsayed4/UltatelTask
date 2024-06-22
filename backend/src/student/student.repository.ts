@@ -15,11 +15,14 @@ export class StudentRepository extends Repository<Student> {
     return await this.save(student);
   }
 
-  async updateStudent(id: number, updateStudentDto: UpdateStudentDto): Promise<Student | null> {
+  async updateStudent(
+    id: number,
+    updateStudentDto: UpdateStudentDto,
+  ): Promise<Student | null> {
     await this.update(id, updateStudentDto);
-    return this.findOneBy({id});
+    return this.findOneBy({ id });
   }
-  
+
   async deleteStudent(id: number): Promise<boolean> {
     const result = await this.delete(id);
     return result.affected > 0;
