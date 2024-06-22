@@ -11,7 +11,7 @@ Access the live application here: [Ultatel-Task-CRUD](https://drive.google.com/f
 - **Maintaining session using refresh token**
 - **Applied repo/service design pattern with layered architecture in nestjs for clean code**
 - **User Authentication**
-- **Responsive Design**
+- **Search , filter, pagination**
 ### Frontend
 
 - **Angular**
