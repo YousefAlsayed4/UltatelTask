@@ -1,16 +1,3 @@
 {
-    "version": 2,
-    "builds": [
-      {
-        "src": "dist/Frontend/",
-        "use": "@vercel/static"
-      }
-    ],
-    "routes": [
-      {
-        "src": "/(.*)",
-        "dest": "/dist/Frontend/"
-      }
-    ]
+    "rewrites": [{ "source": "/(.*)", "destination": "/" }]
   }
-  
