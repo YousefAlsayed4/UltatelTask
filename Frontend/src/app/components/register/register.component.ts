@@ -77,7 +77,6 @@ export class RegisterComponent {
   checkPasswordStrength() {
     const password = this.registerForm.get('password')?.value;
     this.passwordStrength.lengthValid = password.length >= 8;
-
     this.passwordStrength.hasNumber = /[0-9]/.test(password);
     this.passwordStrength.hasUpperCase = /[A-Z]/.test(password);
     this.passwordStrength.hasLowerCase = /[a-z]/.test(password);

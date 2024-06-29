@@ -55,7 +55,7 @@ export class StudentListComponent {
   ) {}
 
   ngOnInit() {
-    this.loadCountries();
+
     this.loadStudents();
   }
 

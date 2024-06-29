@@ -73,19 +73,19 @@ export class StudentEditComponent {
       );
     }
 
-    this.fetchCountries();
+    // this.fetchCountries();
   }
 
-  fetchCountries() {
-    this.http.get<any[]>('assets/countries.json').subscribe({
-      next: (data) => {
-        this.countries = data;
-      },
-      error: (error) => {
-        console.error('Error loading countries:', error);
-      },
-    });
-  }
+  // fetchCountries() {
+  //   this.http.get<any[]>('assets/countries.json').subscribe({
+  //     next: (data) => {
+  //       this.countries = data;
+  //     },
+  //     error: (error) => {
+  //       console.error('Error loading countries:', error);
+  //     },
+  //   });
+  // }
   dateStringToNgbDateStruct(dateString: string): any {
     if (!dateString) return null;
 
